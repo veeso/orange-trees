@@ -1,36 +1,35 @@
-//! # lemon-tree
+//! # orange-trees
 //!
-//! [lemon-tree](https://github.com/veeso/lemon-tree) is a [tui-realm](https://github.com/veeso/tui-realm) implementation
-//! of a treeview component
+//! [orange-trees](https://github.com/veeso/orange-trees) is a Rust implementation of the Tree data structure
 //!
 //! ## Get Started
 //!
-//! ### Adding `lemon-tree` as dependency
+//! ### Adding `orange-trees` as dependency
 //!
 //! ```toml
-//! lemon-tree = "0.1.0"
+//! orange-trees = "0.1.0"
 //! ```
 //!
 //! ## Setup a tree component
 //!
 //! ```rust,no_run
-//! extern crate lemon_tree;
+//! extern crate orange_trees;
 //!
 //! ```
 //!
 
 #![doc(html_playground_url = "https://play.rust-lang.org")]
 #![doc(
-    html_favicon_url = "https://raw.githubusercontent.com/veeso/lemon-tree/main/docs/images/cargo/lemon-tree-128.png"
+    html_favicon_url = "https://raw.githubusercontent.com/veeso/orange-trees/main/docs/images/cargo/orange-trees-128.png"
 )]
 #![doc(
-    html_logo_url = "https://raw.githubusercontent.com/veeso/lemon-tree/main/docs/images/cargo/lemon-tree-512.png"
+    html_logo_url = "https://raw.githubusercontent.com/veeso/orange-trees/main/docs/images/cargo/orange-trees-512.png"
 )]
 
 /**
  * MIT License
  *
- * lemon-tree - Copyright (C) 2021 Christian Visintin
+ * orange-trees - Copyright (C) 2021 Christian Visintin
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

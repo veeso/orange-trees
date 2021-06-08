@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea to improve lemon-tree
+about: Suggest an idea to improve orange-trees
 title: "[Feature Request] - FEATURE_TITLE"
 labels: "new feature"
 assignees: veeso

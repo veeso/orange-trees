@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 - OS: [e.g. GNU/Linux Debian 10]
 - Architecture [Arm, x86_64, ...]
 - Rust version
-- lemon-tree version
+- orange-trees version
 
 ## Additional information
 

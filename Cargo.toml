@@ -1,17 +1,17 @@
 [package]
-name = "lemon-tree"
+name = "orange-trees"
 version = "0.1.0"
 authors = ["Christian Visintin"]
 edition = "2018"
 categories = ["data-structures"]
 description = "Tree data structure with several methods to query and manipulate nodes."
-documentation = "https://docs.rs/lemon-tree"
-homepage = "https://github.com/veeso/lemon-tree"
+documentation = "https://docs.rs/orange-trees"
+homepage = "https://github.com/veeso/orange-trees"
 include = ["src/**/*", "LICENSE", "README.md", "CHANGELOG.md"]
 keywords = ["tree", "data-structures", "node"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/veeso/lemon-tree"
+repository = "https://github.com/veeso/orange-trees"
 
 [dependencies]
 
@@ -21,4 +21,3 @@ pretty_assertions = "0.7.2"
 #[[example]]
 #name = "demo"
 #path = "examples/demo.rs"
-

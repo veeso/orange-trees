@@ -17,7 +17,7 @@ Open an issue when:
 
 - You have questions or concerns regarding the project or the application itself.
 - You have a bug to report.
-- You have a feature or a suggestion to improve lemon-tree to submit.
+- You have a feature or a suggestion to improve orange-trees to submit.
 
 ### Questions
 
@@ -27,7 +27,7 @@ Check the issue is always assigned to `veeso`.
 
 ### Bug reports
 
-If you want to report an issue or a bug you've encountered while using lemon-tree, open an issue using the `Bug report` template.
+If you want to report an issue or a bug you've encountered while using orange-trees, open an issue using the `Bug report` template.
 The `Bug` label should already be set and the issue should already be assigned to `veeso`.
 Don't set other labels to your issue, not even priority.
 
@@ -45,7 +45,7 @@ Maintainers will may add additional labels to your issue:
 ### Feature requests
 
 Whenever you have a good idea which chould improve the project, it is a good idea to submit it to the project owner.
-The first thing you should do though, is not starting to write the code, but is to become concern about how lemon-tree works, what kind
+The first thing you should do though, is not starting to write the code, but is to become concern about how orange-trees works, what kind
 of contribution I appreciate and what kind of contribution I won't consider.
 Said so, follow these steps:
 
@@ -55,7 +55,7 @@ Said so, follow these steps:
 - Open an issue using the `feature request` template describing with accuracy your suggestion
 - Wait for the maintainer feedback on your idea
 
-If you want to implement the feature by yourself and your suggestion gets approved, start writing the code. Remember that on [docs.rs](https://docs.rs/lemon-tree) there is the documentation for the project. Open a PR related to your issue. See [Pull request process for more details](#pull-request-process)
+If you want to implement the feature by yourself and your suggestion gets approved, start writing the code. Remember that on [docs.rs](https://docs.rs/orange-trees) there is the documentation for the project. Open a PR related to your issue. See [Pull request process for more details](#pull-request-process)
 
 It is very important to follow these steps, since it will prevent you from working on a feature that will be rejected and trust me, none of us wants to deal with this situation.
 
@@ -67,7 +67,7 @@ Always mind that your suggestion, may be rejected: I'll always provide a feedbac
 
 At the moment, these kind of contributions are more appreciated and should be preferred:
 
-- Fix for issues described in [Known Issues](./README.md#known-issues-) or [issues reported by the community](https://github.com/veeso/lemon-tree/issues)
+- Fix for issues described in [Known Issues](./README.md#known-issues-) or [issues reported by the community](https://github.com/veeso/orange-trees/issues)
 - Code optimizations: any optimization to the code is welcome
 
 For any other kind of contribution, especially for new features, please submit a new issue first.

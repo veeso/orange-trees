@@ -1,22 +1,22 @@
-# lemon-tree
+# orange-trees
 
 <p align="center">
-  <img src="docs/images/lemon-tree.svg" width="256" height="256" />
+  <img src="docs/images/orange-trees.svg" width="256" height="256" />
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT) [![Stars](https://img.shields.io/github/stars/veeso/lemon-tree.svg)](https://github.com/veeso/lemon-tree) [![Downloads](https://img.shields.io/crates/d/lemon-tree.svg)](https://crates.io/crates/lemon-tree) [![Crates.io](https://img.shields.io/badge/crates.io-v0.1.0-orange.svg)](https://crates.io/crates/lemon-tree) [![Docs](https://docs.rs/lemon-tree/badge.svg)](https://docs.rs/lemon-tree)  
+[![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT) [![Stars](https://img.shields.io/github/stars/veeso/orange-trees.svg)](https://github.com/veeso/orange-trees) [![Downloads](https://img.shields.io/crates/d/orange-trees.svg)](https://crates.io/crates/orange-trees) [![Crates.io](https://img.shields.io/badge/crates.io-v0.1.0-orange.svg)](https://crates.io/crates/orange-trees) [![Docs](https://docs.rs/orange-trees/badge.svg)](https://docs.rs/orange-trees)  
 
-[![Build](https://github.com/veeso/lemon-tree/workflows/Linux/badge.svg)](https://github.com/veeso/lemon-tree/actions) [![Build](https://github.com/veeso/lemon-tree/workflows/MacOS/badge.svg)](https://github.com/veeso/lemon-tree/actions) [![Build](https://github.com/veeso/lemon-tree/workflows/Windows/badge.svg)](https://github.com/veeso/lemon-tree/actions) [![Coverage Status](https://coveralls.io/repos/github/veeso/lemon-tree/badge.svg?branch=main)](https://coveralls.io/github/veeso/lemon-tree?branch=main)
+[![Build](https://github.com/veeso/orange-trees/workflows/Linux/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/Windows/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Coverage Status](https://coveralls.io/repos/github/veeso/orange-trees/badge.svg?branch=main)](https://coveralls.io/github/veeso/orange-trees?branch=main)
 
 Developed by Christian Visintin  
 Current version: 0.1.0 (07/06/2021)
 
 ---
 
-- [lemon-tree](#lemon-tree)
-  - [About lemon-tree 🍋](#about-lemon-tree-)
+- [orange-trees](#orange-trees)
+  - [About orange-trees 🍋](#about-orange-trees-)
   - [Get started 🏁](#get-started-)
-    - [Add lemon-tree to your Cargo.toml 🦀](#add-lemon-tree-to-your-cargotoml-)
+    - [Add orange-trees to your Cargo.toml 🦀](#add-orange-trees-to-your-cargotoml-)
   - [Documentation 📚](#documentation-)
   - [Contributing and issues 🤝🏻](#contributing-and-issues-)
   - [Changelog ⏳](#changelog-)
@@ -25,32 +25,32 @@ Current version: 0.1.0 (07/06/2021)
 
 ---
 
-## About lemon-tree 🍋
+## About orange-trees 🍋
 
-lemon-tree is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
+orange-trees is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
 
 ---
 
 ## Get started 🏁
 
-### Add lemon-tree to your Cargo.toml 🦀
+### Add orange-trees to your Cargo.toml 🦀
 
 ```toml
-lemon-tree = "0.1.0"
+orange-trees = "0.1.0"
 ```
 
 ---
 
 ## Documentation 📚
 
-The developer documentation can be found on Rust Docs at <https://docs.rs/lemon-tree>
+The developer documentation can be found on Rust Docs at <https://docs.rs/orange-trees>
 
 ---
 
 ## Contributing and issues 🤝🏻
 
 Contributions, bug reports, new features and questions are welcome! 😉
-If you have any question or concern, or you want to suggest a new feature, or you want just want to improve lemon-tree, feel free to open an issue or a PR.
+If you have any question or concern, or you want to suggest a new feature, or you want just want to improve orange-trees, feel free to open an issue or a PR.
 
 Please follow [our contributing guidelines](CONTRIBUTING.md)
 
@@ -58,13 +58,13 @@ Please follow [our contributing guidelines](CONTRIBUTING.md)
 
 ## Changelog ⏳
 
-View lemon-tree's changelog [HERE](CHANGELOG.md)
+View orange-trees's changelog [HERE](CHANGELOG.md)
 
 ---
 
 ## Buy me a coffee ☕
 
-If you like lemon-tree and you're grateful for the work I've done, please consider a little donation 🥳
+If you like orange-trees and you're grateful for the work I've done, please consider a little donation 🥳
 
 [![Buy-me-a-coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=veeso&button_colour=404040&font_colour=ffffff&font_family=Comic&outline_colour=ffffff&coffee_colour=FFDD00)](https://www.buymeacoffee.com/veeso)
 
@@ -72,6 +72,6 @@ If you like lemon-tree and you're grateful for the work I've done, please consid
 
 ## License 📃
 
-lemon-tree is licensed under the MIT license.
+orange-trees is licensed under the MIT license.
 
 You can read the entire license [HERE](LICENSE)
