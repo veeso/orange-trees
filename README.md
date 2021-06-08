@@ -9,12 +9,12 @@
 [![Build](https://github.com/veeso/orange-trees/workflows/Linux/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/Windows/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Coverage Status](https://coveralls.io/repos/github/veeso/orange-trees/badge.svg?branch=main)](https://coveralls.io/github/veeso/orange-trees?branch=main)
 
 Developed by Christian Visintin  
-Current version: 0.1.0 (07/06/2021)
+Current version: 0.1.0 (08/06/2021)
 
 ---
 
 - [orange-trees](#orange-trees)
-  - [About orange-trees 🍋](#about-orange-trees-)
+  - [About orange-trees 🍊](#about-orange-trees-)
   - [Get started 🏁](#get-started-)
     - [Add orange-trees to your Cargo.toml 🦀](#add-orange-trees-to-your-cargotoml-)
   - [Documentation 📚](#documentation-)
@@ -25,7 +25,7 @@ Current version: 0.1.0 (07/06/2021)
 
 ---
 
-## About orange-trees 🍋
+## About orange-trees 🍊
 
 orange-trees is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
 
