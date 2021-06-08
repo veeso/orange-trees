@@ -409,6 +409,29 @@ impl<U: PartialEq, T> Node<U, T> {
     }
 }
 
+// -- tree macro
+
+#[macro_export]
+macro_rules! tree {
+    ( $id:expr, $value:expr, $( $more:expr ),* ) => {{
+        let mut node = Node::new($id, $value);
+        $(
+            node.add_child($more);
+        )*
+        node
+    }};
+
+    ( $id:expr, $value:expr, $child:expr) => {
+        Node::new($id, $value).with_child($child);
+    };
+
+    ( $id:expr, $value:expr ) => {
+        Node::new($id, $value)
+    };
+}
+
+// -- tests
+
 #[cfg(test)]
 mod tests {
 
@@ -614,5 +637,29 @@ mod tests {
             .sort(|a, b| a.value().partial_cmp(b.value()).unwrap());
         let values: Vec<usize> = tree.root().iter().map(|x| *x.value()).collect();
         assert_eq!(values, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+
+    #[test]
+    fn test_macro() {
+        // -- Empty node
+        let node: Node<&'static str, usize> = tree!("root", 0);
+        assert_eq!(node.id(), &"root");
+        assert_eq!(*node.value(), 0);
+        assert_eq!(node.children().len(), 0);
+        // Node with child
+        let node: Node<&'static str, usize> = tree!("root", 0, tree!("a", 1));
+        assert_eq!(node.id(), &"root");
+        assert_eq!(*node.value(), 0);
+        assert_eq!(node.children().len(), 1);
+        assert_eq!(*node.query(&"a").unwrap().value(), 1);
+        let node: Node<&'static str, usize> = tree!("root", 0, tree!("a", 1), tree!("b", 0));
+        assert_eq!(node.children().len(), 2);
+        let tree: Tree<&'static str, usize> = Tree::new(tree!(
+            "root",
+            0,
+            tree!("a", 1, tree!("a1", 3), tree!("a2", 4)),
+            tree!("b", 0)
+        ));
+        assert_eq!(tree.root().count(), 5);
     }
 }
