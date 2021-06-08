@@ -55,59 +55,61 @@ use std::slice::{Iter, IterMut};
 
 /// ## Tree
 ///
-/// represent the tree data structure inside the component
+/// represent the tree data structure inside the component.
+/// U: is the type for the node indentifier (must implement PartialEq)
+/// T: is the type for the node value
 #[derive(Debug)]
-pub struct Tree<T> {
-    root: Node<T>,
+pub struct Tree<U, T> {
+    root: Node<U, T>,
 }
 
-impl<T> Tree<T> {
+impl<U: PartialEq, T> Tree<U, T> {
     /// ### new
     ///
     /// Instantiates a new `Tree`
-    pub fn new(root: Node<T>) -> Self {
+    pub fn new(root: Node<U, T>) -> Self {
         Self { root }
     }
 
     /// ### root
     ///
     /// Returns a reference to the root node
-    pub fn root(&self) -> &Node<T> {
+    pub fn root(&self) -> &Node<U, T> {
         &self.root
     }
 
     /// ### root_mut
     ///
     /// Returns a mutablen reference to the root node
-    pub fn root_mut(&mut self) -> &mut Node<T> {
+    pub fn root_mut(&mut self) -> &mut Node<U, T> {
         &mut self.root
     }
 
     /// ### query
     ///
     /// Query tree for a certain node
-    pub fn query(&self, id: &str) -> Option<&Node<T>> {
+    pub fn query(&self, id: &U) -> Option<&Node<U, T>> {
         self.root.query(id)
     }
 
     /// ### query_mut
     ///
     /// Query tree for a certain node and return it as a mutable reference
-    pub fn query_mut(&mut self, id: &str) -> Option<&mut Node<T>> {
+    pub fn query_mut(&mut self, id: &U) -> Option<&mut Node<U, T>> {
         self.root.query_mut(id)
     }
 
     /// ### parent
     ///
     /// Get parent node of `id`
-    pub fn parent(&self, id: &str) -> Option<&Node<T>> {
+    pub fn parent(&self, id: &U) -> Option<&Node<U, T>> {
         self.root().parent(id)
     }
 
     /// ### siblings
     ///
     /// Get siblings for provided node
-    pub fn siblings(&self, id: &str) -> Option<Vec<&str>> {
+    pub fn siblings(&self, id: &U) -> Option<Vec<&U>> {
         self.root().siblings(id)
     }
 
@@ -115,7 +117,7 @@ impl<T> Tree<T> {
     ///
     /// Get starting from root the node associated to the indexes.
     /// When starting from tree, the first element in route must be `0`
-    pub fn node_by_route(&self, route: &[usize]) -> Option<&Node<T>> {
+    pub fn node_by_route(&self, route: &[usize]) -> Option<&Node<U, T>> {
         if route.is_empty() {
             None
         } else {
@@ -126,7 +128,7 @@ impl<T> Tree<T> {
     /// ### route_by_node
     ///
     /// Calculate the route of a node by its id
-    pub fn route_by_node(&self, id: &str) -> Option<Vec<usize>> {
+    pub fn route_by_node(&self, id: &U) -> Option<Vec<usize>> {
         match self.root().route_by_node(id) {
             None => None,
             Some(route) => {
@@ -141,21 +143,23 @@ impl<T> Tree<T> {
 /// ## Node
 ///
 /// Describes a node inside the `Tree`
+/// U: is the type for the node indentifier (must implement PartialEq)
+/// T: is the type for the node value
 #[derive(Debug)]
-pub struct Node<T> {
-    id: String, // Must uniquely identify the node in the tree
-    value: T,   // The node value
-    pub(crate) children: Vec<Node<T>>,
+pub struct Node<U, T> {
+    id: U,    // Must uniquely identify the node in the tree
+    value: T, // The node value
+    children: Vec<Node<U, T>>,
 }
 
-impl<T> Node<T> {
+impl<U: PartialEq, T> Node<U, T> {
     /// ### new
     ///
     /// Instantiates a new `Node`.
     /// In order to use query methods the ID should be unique for each node in the tree
-    pub fn new<S: AsRef<str>>(id: S, value: T) -> Self {
+    pub fn new(id: U, value: T) -> Self {
         Self {
-            id: id.as_ref().to_string(),
+            id,
             value,
             children: vec![],
         }
@@ -164,8 +168,8 @@ impl<T> Node<T> {
     /// ### id
     ///
     /// Get reference to id
-    pub fn id(&self) -> &str {
-        self.id.as_str()
+    pub fn id(&self) -> &U {
+        &self.id
     }
 
     /// ### value
@@ -178,28 +182,28 @@ impl<T> Node<T> {
     /// ### children
     ///
     /// Returns a reference to the node's children
-    pub fn children(&self) -> &[Node<T>] {
+    pub fn children(&self) -> &[Node<U, T>] {
         self.children.as_slice()
     }
 
     /// ### iter
     ///
     /// Returns an iterator over node's children
-    pub fn iter(&self) -> Iter<'_, Node<T>> {
+    pub fn iter(&self) -> Iter<'_, Node<U, T>> {
         self.children.iter()
     }
 
     /// ### iter_mut
     ///
     /// Returns a mutable iterator over node's children
-    pub fn iter_mut(&mut self) -> IterMut<'_, Node<T>> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, Node<U, T>> {
         self.children.iter_mut()
     }
 
     /// ### with_children
     ///
     /// Sets Node children
-    pub fn with_children(mut self, children: Vec<Node<T>>) -> Self {
+    pub fn with_children(mut self, children: Vec<Node<U, T>>) -> Self {
         self.children = children;
         self
     }
@@ -207,7 +211,7 @@ impl<T> Node<T> {
     /// ### with_child
     ///
     /// Create a new child in this Node
-    pub fn with_child(mut self, child: Node<T>) -> Self {
+    pub fn with_child(mut self, child: Node<U, T>) -> Self {
         self.add_child(child);
         self
     }
@@ -217,7 +221,7 @@ impl<T> Node<T> {
     /// ### add_child
     ///
     /// Add a child to the node
-    pub fn add_child(&mut self, child: Node<T>) {
+    pub fn add_child(&mut self, child: Node<U, T>) {
         self.children.push(child);
     }
 
@@ -252,7 +256,7 @@ impl<T> Node<T> {
     /// ### query
     ///
     /// Search for `id` inside Node's children (or is itself)
-    pub fn query(&self, id: &str) -> Option<&Self> {
+    pub fn query(&self, id: &U) -> Option<&Self> {
         if self.id() == id {
             Some(&self)
         } else {
@@ -269,7 +273,7 @@ impl<T> Node<T> {
     /// ### query_mut
     ///
     /// Returns a mutable reference to a Node
-    pub(self) fn query_mut(&mut self, id: &str) -> Option<&mut Self> {
+    pub fn query_mut(&mut self, id: &U) -> Option<&mut Self> {
         if self.id() == id {
             Some(self)
         } else {
@@ -297,7 +301,7 @@ impl<T> Node<T> {
         /// ### depth_r
         ///
         /// Private recursive call for depth
-        fn depth_r<T>(ptr: &Node<T>, depth: usize) -> usize {
+        fn depth_r<U, T>(ptr: &Node<U, T>, depth: usize) -> usize {
             ptr.children
                 .iter()
                 .map(|x| depth_r(x, depth + 1))
@@ -310,7 +314,7 @@ impl<T> Node<T> {
     /// ### parent
     ///
     /// Get parent node of `id`
-    pub fn parent(&self, id: &str) -> Option<&Self> {
+    pub fn parent(&self, id: &U) -> Option<&Self> {
         match self.route_by_node(id) {
             None => None,
             Some(route) => {
@@ -327,7 +331,7 @@ impl<T> Node<T> {
     /// ### siblings
     ///
     /// Get siblings for provided node
-    pub fn siblings(&self, id: &str) -> Option<Vec<&str>> {
+    pub fn siblings(&self, id: &U) -> Option<Vec<&U>> {
         self.parent(id).map(|x| {
             x.children
                 .iter()
@@ -344,7 +348,7 @@ impl<T> Node<T> {
         if route.is_empty() {
             Some(self)
         } else {
-            let next: &Node<T> = self.children.get(route[0])?;
+            let next: &Node<U, T> = self.children.get(route[0])?;
             let route = &route[1..];
             next.node_by_route(route)
         }
@@ -353,11 +357,11 @@ impl<T> Node<T> {
     /// ### route_by_node
     ///
     /// Calculate the route of a node by its id
-    pub fn route_by_node(&self, id: &str) -> Option<Vec<usize>> {
+    pub fn route_by_node(&self, id: &U) -> Option<Vec<usize>> {
         // Recursive function
-        fn route_by_node_r<T>(
-            node: &Node<T>,
-            id: &str,
+        fn route_by_node_r<U: PartialEq, T>(
+            node: &Node<U, T>,
+            id: &U,
             enumerator: Option<usize>,
             mut route: Vec<usize>,
         ) -> Option<Vec<usize>> {
@@ -398,37 +402,40 @@ mod tests {
     #[test]
     fn test_tree() {
         // -- Build
-        let mut tree: Tree<&str> = Tree::new(
-            Node::new("/", "/")
+        let mut tree: Tree<String, &str> = Tree::new(
+            Node::new("/".to_string(), "/")
                 .with_child(
-                    Node::new("/bin", "bin/")
-                        .with_child(Node::new("/bin/ls", "ls"))
-                        .with_child(Node::new("/bin/pwd", "pwd")),
+                    Node::new("/bin".to_string(), "bin/")
+                        .with_child(Node::new("/bin/ls".to_string(), "ls"))
+                        .with_child(Node::new("/bin/pwd".to_string(), "pwd")),
                 )
                 .with_child(
-                    Node::new("/home", "home/").with_child(
-                        Node::new("/home/omar", "omar/")
-                            .with_child(Node::new("/home/omar/readme.md", "readme.md"))
-                            .with_child(Node::new("/home/omar/changelog.md", "changelog.md")),
+                    Node::new("/home".to_string(), "home/").with_child(
+                        Node::new("/home/omar".to_string(), "omar/")
+                            .with_child(Node::new("/home/omar/readme.md".to_string(), "readme.md"))
+                            .with_child(Node::new(
+                                "/home/omar/changelog.md".to_string(),
+                                "changelog.md",
+                            )),
                     ),
                 ),
         );
-        let root: &Node<&str> = tree.root();
+        let root: &Node<String, &str> = tree.root();
         assert_eq!(root.id(), "/");
         assert_eq!(root.value(), &"/");
         assert_eq!(root.children.len(), 2);
-        let bin: &Node<&str> = &root.children[0];
+        let bin: &Node<String, &str> = &root.children[0];
         assert_eq!(bin.id(), "/bin");
         assert_eq!(bin.value(), &"bin/");
         assert_eq!(bin.children.len(), 2);
-        let bin_ids: Vec<&str> = bin.children.iter().map(|x| x.id()).collect();
+        let bin_ids: Vec<&String> = bin.children.iter().map(|x| x.id()).collect();
         assert_eq!(bin_ids, vec!["/bin/ls", "/bin/pwd"]);
-        let home: &Node<&str> = &tree.root.children[1];
+        let home: &Node<String, &str> = &tree.root.children[1];
         assert_eq!(home.id(), "/home");
         assert_eq!(home.value(), &"home/");
         assert_eq!(home.children.len(), 1);
-        let omar_home: &Node<&str> = &home.children[0];
-        let omar_home_ids: Vec<&str> = omar_home.children.iter().map(|x| x.id()).collect();
+        let omar_home: &Node<String, &str> = &home.children[0];
+        let omar_home_ids: Vec<&String> = omar_home.children.iter().map(|x| x.id()).collect();
         assert_eq!(
             omar_home_ids,
             vec!["/home/omar/readme.md", "/home/omar/changelog.md"]
@@ -442,39 +449,51 @@ mod tests {
         assert_eq!(root.iter().count(), 2);
         // -- Query
         assert_eq!(
-            tree.query("/home/omar/changelog.md").unwrap().id(),
+            tree.query(&"/home/omar/changelog.md".to_string())
+                .unwrap()
+                .id(),
             "/home/omar/changelog.md"
         );
-        assert!(tree.query("ommlar").is_none());
+        assert!(tree.query(&"ommlar".to_string()).is_none());
         // is leaf
-        assert_eq!(tree.query("/home/omar").unwrap().is_leaf(), false);
         assert_eq!(
-            tree.query("/home/omar/changelog.md").unwrap().is_leaf(),
+            tree.query(&"/home/omar".to_string()).unwrap().is_leaf(),
+            false
+        );
+        assert_eq!(
+            tree.query(&"/home/omar/changelog.md".to_string())
+                .unwrap()
+                .is_leaf(),
             true
         );
         // parent
-        assert!(tree.parent("/").is_none());
+        assert!(tree.parent(&"/".to_string()).is_none());
         assert_eq!(
-            tree.parent("/home/omar/changelog.md").unwrap().id(),
+            tree.parent(&"/home/omar/changelog.md".to_string())
+                .unwrap()
+                .id(),
             "/home/omar"
         );
-        assert!(tree.parent("/homer").is_none());
+        assert!(tree.parent(&"/homer".to_string()).is_none());
         // siblings
         assert_eq!(
-            tree.siblings("/home/omar/changelog.md").unwrap(),
+            tree.siblings(&"/home/omar/changelog.md".to_string())
+                .unwrap(),
             vec!["/home/omar/readme.md"]
         );
-        assert_eq!(tree.siblings("/home/omar").unwrap().len(), 0);
-        assert!(tree.siblings("/homer").is_none());
+        assert_eq!(tree.siblings(&"/home/omar".to_string()).unwrap().len(), 0);
+        assert!(tree.siblings(&"/homer".to_string()).is_none());
         // Mutable
-        let root: &mut Node<&str> = tree.root_mut();
+        let root: &mut Node<String, &str> = tree.root_mut();
         assert_eq!(root.iter_mut().count(), 2);
         // Push node
-        tree.query_mut("/home/omar")
+        tree.query_mut(&"/home/omar".to_string())
             .unwrap()
-            .add_child(Node::new("/home/omar/Cargo.toml", "Cargo.toml"));
+            .add_child(Node::new("/home/omar/Cargo.toml".to_string(), "Cargo.toml"));
         assert_eq!(
-            tree.query("/home/omar/Cargo.toml").unwrap().id(),
+            tree.query(&"/home/omar/Cargo.toml".to_string())
+                .unwrap()
+                .id(),
             "/home/omar/Cargo.toml"
         );
         // -- node_by_route
@@ -489,43 +508,58 @@ mod tests {
         assert!(tree.root().node_by_route(&[1, 0, 3]).is_none());
         // -- Route by node
         assert_eq!(
-            tree.route_by_node("/home/omar/changelog.md").unwrap(),
+            tree.route_by_node(&"/home/omar/changelog.md".to_string())
+                .unwrap(),
             vec![0, 1, 0, 1]
         );
         assert_eq!(
             tree.root()
-                .route_by_node("/home/omar/changelog.md")
+                .route_by_node(&"/home/omar/changelog.md".to_string())
                 .unwrap(),
             vec![1, 0, 1]
         );
-        assert!(tree.root().route_by_node("ciccio-pasticcio").is_none());
+        assert!(tree
+            .root()
+            .route_by_node(&"ciccio-pasticcio".to_string())
+            .is_none());
         // Clear node
-        tree.query_mut("/home/omar").unwrap().clear();
-        assert_eq!(tree.query("/home/omar").unwrap().children.len(), 0);
-        // -- With children
-        let tree: Tree<&str> = Tree::new(
-            Node::new("a", "a").with_children(vec![Node::new("a1", "a1"), Node::new("a2", "a2")]),
+        tree.query_mut(&"/home/omar".to_string()).unwrap().clear();
+        assert_eq!(
+            tree.query(&"/home/omar".to_string())
+                .unwrap()
+                .children
+                .len(),
+            0
         );
-        assert!(tree.query("a").is_some());
-        assert!(tree.query("a1").is_some());
-        assert!(tree.query("a2").is_some());
+        // -- With children
+        let tree: Tree<String, &str> =
+            Tree::new(Node::new("a".to_string(), "a").with_children(vec![
+                Node::new("a1".to_string(), "a1"),
+                Node::new("a2".to_string(), "a2"),
+            ]));
+        assert!(tree.query(&"a".to_string()).is_some());
+        assert!(tree.query(&"a1".to_string()).is_some());
+        assert!(tree.query(&"a2".to_string()).is_some());
         // -- truncate
-        let mut tree: Tree<&str> = Tree::new(
-            Node::new("/", "/")
+        let mut tree: Tree<String, &str> = Tree::new(
+            Node::new("/".to_string(), "/")
                 .with_child(
-                    Node::new("/bin", "bin/")
-                        .with_child(Node::new("/bin/ls", "ls"))
-                        .with_child(Node::new("/bin/pwd", "pwd")),
+                    Node::new("/bin".to_string(), "bin/")
+                        .with_child(Node::new("/bin/ls".to_string(), "ls"))
+                        .with_child(Node::new("/bin/pwd".to_string(), "pwd")),
                 )
                 .with_child(
-                    Node::new("/home", "home/").with_child(
-                        Node::new("/home/omar", "omar/")
-                            .with_child(Node::new("/home/omar/readme.md", "readme.md"))
-                            .with_child(Node::new("/home/omar/changelog.md", "changelog.md")),
+                    Node::new("/home".to_string(), "home/").with_child(
+                        Node::new("/home/omar".to_string(), "omar/")
+                            .with_child(Node::new("/home/omar/readme.md".to_string(), "readme.md"))
+                            .with_child(Node::new(
+                                "/home/omar/changelog.md".to_string(),
+                                "changelog.md",
+                            )),
                     ),
                 ),
         );
-        let root: &mut Node<&str> = &mut tree.root;
+        let root: &mut Node<String, &str> = &mut tree.root;
         root.truncate(1);
         assert_eq!(root.children.len(), 2);
         assert_eq!(root.children[0].children.len(), 0);
