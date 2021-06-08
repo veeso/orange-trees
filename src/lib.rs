@@ -59,7 +59,7 @@ use std::slice::{Iter, IterMut};
 /// represent the tree data structure inside the component.
 /// U: is the type for the node indentifier (must implement PartialEq)
 /// T: is the type for the node value
-#[derive(Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Tree<U, T> {
     root: Node<U, T>,
 }
@@ -146,7 +146,7 @@ impl<U: PartialEq, T> Tree<U, T> {
 /// Describes a node inside the `Tree`
 /// U: is the type for the node indentifier (must implement PartialEq)
 /// T: is the type for the node value
-#[derive(Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Node<U, T> {
     id: U,    // Must uniquely identify the node in the tree
     value: T, // The node value
