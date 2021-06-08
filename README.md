@@ -29,6 +29,9 @@ Current version: 0.1.0 (08/06/2021)
 
 orange-trees is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
 
+> Flowers in my hair, I belong by the sea
+> Where we used to be, sitting by the orange trees
+
 ---
 
 ## Get started 🏁
