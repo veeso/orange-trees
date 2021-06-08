@@ -51,6 +51,7 @@
  * SOFTWARE.
  */
 // deps
+use std::cmp::Ordering;
 use std::slice::{Iter, IterMut};
 
 /// ## Tree
@@ -225,6 +226,13 @@ impl<U: PartialEq, T> Node<U, T> {
         self.children.push(child);
     }
 
+    /// ### remove_child
+    ///
+    /// Remove child from node
+    pub fn remove_child(&mut self, id: &U) {
+        self.children.retain(|x| x.id() != id);
+    }
+
     /// ### clear
     ///
     /// Clear node children
@@ -242,6 +250,16 @@ impl<U: PartialEq, T> Node<U, T> {
         } else {
             self.children.iter_mut().for_each(|x| x.truncate(depth - 1));
         }
+    }
+
+    /// ### sort
+    ///
+    /// Sort node children by predicate
+    pub fn sort<F>(&mut self, compare: F)
+    where
+        F: FnMut(&Node<U, T>, &Node<U, T>) -> Ordering,
+    {
+        self.children.sort_by(compare);
     }
 
     // -- query
@@ -496,6 +514,20 @@ mod tests {
                 .id(),
             "/home/omar/Cargo.toml"
         );
+        // Remove
+        tree.query_mut(&"/home/omar".to_string())
+            .unwrap()
+            .add_child(Node::new("/home/omar/Cargo.lock".to_string(), "Cargo.lock"));
+        assert_eq!(
+            tree.query(&"/home/omar/Cargo.lock".to_string())
+                .unwrap()
+                .id(),
+            "/home/omar/Cargo.lock"
+        );
+        tree.query_mut(&"/home/omar".to_string())
+            .unwrap()
+            .remove_child(&String::from("/home/omar/Cargo.lock"));
+        assert!(tree.query(&"/home/omar/Cargo.lock".to_string()).is_none());
         // -- node_by_route
         assert_eq!(
             tree.node_by_route(&[0, 1, 0, 1]).unwrap().id(),
@@ -566,5 +598,22 @@ mod tests {
         assert_eq!(root.children[0].id(), "/bin");
         assert_eq!(root.children[1].children.len(), 0);
         assert_eq!(root.children[1].id(), "/home");
+        // Sort
+        let mut tree: Tree<&'static str, usize> = Tree::new(
+            Node::new("/", 0)
+                .with_child(Node::new("8", 8))
+                .with_child(Node::new("7", 7))
+                .with_child(Node::new("3", 3))
+                .with_child(Node::new("1", 1))
+                .with_child(Node::new("2", 2))
+                .with_child(Node::new("9", 9))
+                .with_child(Node::new("5", 5))
+                .with_child(Node::new("4", 4))
+                .with_child(Node::new("6", 6)),
+        );
+        tree.root_mut()
+            .sort(|a, b| a.value().partial_cmp(b.value()).unwrap());
+        let values: Vec<usize> = tree.root().iter().map(|x| *x.value()).collect();
+        assert_eq!(values, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
     }
 }
