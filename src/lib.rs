@@ -10,11 +10,194 @@
 //! orange-trees = "0.1.0"
 //! ```
 //!
-//! ## Setup a tree component
+//! ### Initialize a tree
 //!
-//! ```rust,no_run
-//! extern crate orange_trees;
+//! Orange-trees provides three ways to initialize trees:
 //!
+//! 1. using the `node!` macro
+//! 2. Using the `with_child` constructor nested structure
+//! 3. Using `with_children`
+//!
+//! ```rust
+//! # #[macro_use] extern crate orange_trees;
+//! use orange_trees::{Tree, Node};
+//!
+//! // Create a tree using macro
+//! let tree: Tree<&'static str, &'static str> = Tree::new(
+//!   node!("/", "/"
+//!     , node!("/bin", "bin/"
+//!       , node!("/bin/ls", "ls")
+//!       , node!("/bin/pwd", "pwd")
+//!     )
+//!     , node!("/tmp", "tmp/"
+//!       , node!("/tmp/dump.txt", "dump.txt")
+//!       , node!("/tmp/omar.txt", "omar.txt")
+//!     )
+//!   )
+//! );
+//!
+//! // Create a tree using constructor
+//! let tree: Tree<&'static str, &'static str> = Tree::new(
+//!   Node::new("/", "/")
+//!     .with_child(
+//!       Node::new("/bin", "bin/")
+//!         .with_child(Node::new("/bin/ls", "ls"))
+//!         .with_child(Node::new("/bin/pwd", "pwd"))
+//!       )
+//!     .with_child(
+//!       Node::new("/tmp", "tmp/")
+//!         .with_child(Node::new("/tmp/dump.txt", "dump.txt"))
+//!         .with_child(Node::new("/tmp/omar.txt", "omar.txt"))
+//!         .with_child(
+//!           Node::new("/tmp/.cache", "cache/")
+//!             .with_child(Node::new("/tmp/.cache/xyz.cache", "xyz.cache"))
+//!         )
+//!     ),
+//! );
+//!
+//! // With-children
+//!
+//! let tree: Tree<String, &str> =
+//!     Tree::new(Node::new("a".to_string(), "a").with_children(vec![
+//!         Node::new("a1".to_string(), "a1"),
+//!         Node::new("a2".to_string(), "a2"),
+//!     ]));
+//! ```
+//!
+//! ### Query a tree
+//!
+//! There are many functions to query nodes' attributes, such as their value, their depth and their children.
+//! In addition to these, there are also functions to search nodes by predicate or by id.
+//!
+//! ```rust
+//! use orange_trees::{Node, Tree};
+//!
+//! let tree: Tree<&'static str, &'static str> = Tree::new(
+//!   Node::new("/", "/")
+//!     .with_child(
+//!       Node::new("/bin", "bin/")
+//!         .with_child(Node::new("/bin/ls", "ls"))
+//!         .with_child(Node::new("/bin/pwd", "pwd"))
+//!       )
+//!     .with_child(
+//!       Node::new("/tmp", "tmp/")
+//!         .with_child(Node::new("/tmp/dump.txt", "dump.txt"))
+//!         .with_child(Node::new("/tmp/omar.txt", "omar.txt"))
+//!         .with_child(
+//!           Node::new("/tmp/.cache", "cache/")
+//!             .with_child(Node::new("/tmp/.cache/xyz.cache", "xyz.cache"))
+//!         )
+//!     ),
+//! );
+//! // Query tree
+//! let bin: &Node<&'static str, &'static str> = tree.root().query(&"/bin").unwrap();
+//! assert_eq!(bin.id(), &"/bin");
+//! assert_eq!(bin.value(), &"bin/");
+//! assert_eq!(bin.children().len(), 2);
+//! // Find all txt files
+//! let txt_files: Vec<&Node<&'static str, &'static str>> = tree.root().find(&|x| x.value().ends_with(".txt") && x.is_leaf());
+//! assert_eq!(txt_files.len(), 2);
+//! // Count items
+//! assert_eq!(tree.root().query(&"/bin").unwrap().count(), 3);
+//! // Depth (max depth of the tree)
+//! assert_eq!(tree.root().depth(), 4);
+//! ```
+//!
+//! ### Manipulate trees
+//!
+//! Orange-trees provides a rich set of methods to manipulate nodes, which basically consists in:
+//!
+//! - Adding and removing children
+//! - Sorting node children
+//! - Truncating a node by depth
+//!
+//! ```rust
+//! use orange_trees::{Node, Tree};
+//!
+//! let mut tree: Tree<&'static str, &'static str> = Tree::new(
+//!   Node::new("/", "/")
+//!     .with_child(
+//!       Node::new("/bin", "bin/")
+//!         .with_child(Node::new("/bin/ls", "ls"))
+//!         .with_child(Node::new("/bin/pwd", "pwd"))
+//!       )
+//!     .with_child(
+//!       Node::new("/tmp", "tmp/")
+//!         .with_child(Node::new("/tmp/dump.txt", "dump.txt"))
+//!         .with_child(Node::new("/tmp/omar.txt", "omar.txt"))
+//!         .with_child(
+//!           Node::new("/tmp/.cache", "cache/")
+//!             .with_child(Node::new("/tmp/.cache/xyz.cache", "xyz.cache"))
+//!         )
+//!     ),
+//! );
+//!
+//! // Remove child
+//! tree.root_mut().query_mut(&"/tmp").unwrap().remove_child(&"/tmp/.cache");
+//! assert!(tree.root().query(&"/tmp/.cache").is_none());
+//! // Add child
+//! tree.root_mut().add_child(Node::new("/var", "var/"));
+//! // Clear node
+//! tree.root_mut().query_mut(&"/tmp").unwrap().clear();
+//! assert_eq!(tree.root().query(&"/tmp").unwrap().count(), 1);
+//! // Sort tree
+//! let mut tree: Tree<&'static str, usize> = Tree::new(
+//!     Node::new("/", 0)
+//!         .with_child(Node::new("8", 8))
+//!         .with_child(Node::new("7", 7))
+//!         .with_child(Node::new("3", 3))
+//!         .with_child(Node::new("1", 1))
+//!         .with_child(Node::new("2", 2))
+//!         .with_child(Node::new("9", 9))
+//!         .with_child(Node::new("5", 5))
+//!         .with_child(Node::new("4", 4))
+//!         .with_child(Node::new("6", 6)),
+//! );
+//! tree.root_mut()
+//!     .sort(|a, b| a.value().partial_cmp(b.value()).unwrap());
+//! let values: Vec<usize> = tree.root().iter().map(|x| *x.value()).collect();
+//! assert_eq!(values, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+//! ```
+//!
+//! ### Working with routes
+//!
+//! Whenever you want to track the state of the tree (such as tracking opened nodes or selected one), routes come handy to do so.
+//! Routes are basically the path, described by child index, to go from the parent node to the child node.
+//! You can get the route for a node and then the node associated to a route with two simple functions:
+//!
+//! ```rust
+//! use orange_trees::{Node, Tree};
+//!
+//! let tree: Tree<String, &str> = Tree::new(
+//!     Node::new("/".to_string(), "/")
+//!     .with_child(
+//!         Node::new("/bin".to_string(), "bin/")
+//!             .with_child(Node::new("/bin/ls".to_string(), "ls"))
+//!             .with_child(Node::new("/bin/pwd".to_string(), "pwd")),
+//!     )
+//!     .with_child(
+//!         Node::new("/home".to_string(), "home/").with_child(
+//!             Node::new("/home/omar".to_string(), "omar/")
+//!                 .with_child(Node::new("/home/omar/readme.md".to_string(), "readme.md"))
+//!                 .with_child(Node::new(
+//!                     "/home/omar/changelog.md".to_string(),
+//!                     "changelog.md",
+//!                 )),
+//!         ),
+//!     ),
+//! );
+//! // -- node_by_route
+//! assert_eq!(
+//!     tree.root().node_by_route(&[1, 0, 1]).unwrap().id(),
+//!     "/home/omar/changelog.md"
+//! );
+//! // -- Route by node
+//! assert_eq!(
+//!     tree.root()
+//!         .route_by_node(&"/home/omar/changelog.md".to_string())
+//!         .unwrap(),
+//!     vec![1, 0, 1]
+//! );
 //! ```
 //!
 
@@ -99,6 +282,8 @@ pub struct Node<U, T> {
 }
 
 impl<U: PartialEq, T> Node<U, T> {
+    // -- constructor
+
     /// ### new
     ///
     /// Instantiates a new `Node`.
@@ -110,6 +295,24 @@ impl<U: PartialEq, T> Node<U, T> {
             children: vec![],
         }
     }
+
+    /// ### with_children
+    ///
+    /// Sets Node children
+    pub fn with_children(mut self, children: Vec<Node<U, T>>) -> Self {
+        self.children = children;
+        self
+    }
+
+    /// ### with_child
+    ///
+    /// Create a new child in this Node
+    pub fn with_child(mut self, child: Node<U, T>) -> Self {
+        self.add_child(child);
+        self
+    }
+
+    // -- getter
 
     /// ### id
     ///
@@ -144,22 +347,6 @@ impl<U: PartialEq, T> Node<U, T> {
     /// Returns a mutable iterator over node's children
     pub fn iter_mut(&mut self) -> IterMut<'_, Node<U, T>> {
         self.children.iter_mut()
-    }
-
-    /// ### with_children
-    ///
-    /// Sets Node children
-    pub fn with_children(mut self, children: Vec<Node<U, T>>) -> Self {
-        self.children = children;
-        self
-    }
-
-    /// ### with_child
-    ///
-    /// Create a new child in this Node
-    pub fn with_child(mut self, child: Node<U, T>) -> Self {
-        self.add_child(child);
-        self
     }
 
     // -- manipulation
@@ -372,10 +559,10 @@ impl<U: PartialEq, T> Node<U, T> {
     }
 }
 
-// -- tree macro
+// -- node macro
 
 #[macro_export]
-macro_rules! tree {
+macro_rules! node {
     ( $id:expr, $value:expr, $( $more:expr ),* ) => {{
         let mut node = Node::new($id, $value);
         $(
@@ -694,23 +881,23 @@ mod tests {
     #[test]
     fn test_macro() {
         // -- Empty node
-        let node: Node<&'static str, usize> = tree!("root", 0);
+        let node: Node<&'static str, usize> = node!("root", 0);
         assert_eq!(node.id(), &"root");
         assert_eq!(*node.value(), 0);
         assert_eq!(node.children().len(), 0);
         // Node with child
-        let node: Node<&'static str, usize> = tree!("root", 0, tree!("a", 1));
+        let node: Node<&'static str, usize> = node!("root", 0, node!("a", 1));
         assert_eq!(node.id(), &"root");
         assert_eq!(*node.value(), 0);
         assert_eq!(node.children().len(), 1);
         assert_eq!(*node.query(&"a").unwrap().value(), 1);
-        let node: Node<&'static str, usize> = tree!("root", 0, tree!("a", 1), tree!("b", 0));
+        let node: Node<&'static str, usize> = node!("root", 0, node!("a", 1), node!("b", 0));
         assert_eq!(node.children().len(), 2);
-        let tree: Tree<&'static str, usize> = Tree::new(tree!(
+        let tree: Tree<&'static str, usize> = Tree::new(node!(
             "root",
             0,
-            tree!("a", 1, tree!("a1", 3), tree!("a2", 4)),
-            tree!("b", 0)
+            node!("a", 1, node!("a1", 3), node!("a2", 4)),
+            node!("b", 0)
         ));
         assert_eq!(tree.root().count(), 5);
     }

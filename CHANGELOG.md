@@ -7,6 +7,6 @@
 
 ## 0.1.0
 
-Released on 08/06/2021
+Released on 09/06/2021
 
 - First release

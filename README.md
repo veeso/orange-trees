@@ -9,7 +9,7 @@
 [![Build](https://github.com/veeso/orange-trees/workflows/Linux/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/Windows/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Coverage Status](https://coveralls.io/repos/github/veeso/orange-trees/badge.svg?branch=main)](https://coveralls.io/github/veeso/orange-trees?branch=main)
 
 Developed by Christian Visintin  
-Current version: 0.1.0 (08/06/2021)
+Current version: 0.1.0 (09/06/2021)
 
 ---
 
@@ -17,7 +17,7 @@ Current version: 0.1.0 (08/06/2021)
   - [About orange-trees 🍊](#about-orange-trees-)
   - [Get started 🏁](#get-started-)
     - [Add orange-trees to your Cargo.toml 🦀](#add-orange-trees-to-your-cargotoml-)
-  - [Documentation 📚](#documentation-)
+    - [Examples](#examples)
   - [Contributing and issues 🤝🏻](#contributing-and-issues-)
   - [Changelog ⏳](#changelog-)
   - [Buy me a coffee ☕](#buy-me-a-coffee-)
@@ -42,11 +42,9 @@ orange-trees is an implementation of the **Tree** data structure. It comes with 
 orange-trees = "0.1.0"
 ```
 
----
+### Examples
 
-## Documentation 📚
-
-The developer documentation can be found on Rust Docs at <https://docs.rs/orange-trees>
+Examples can be found in the homepage of the documentation at <https://docs.rs/orange-trees>
 
 ---
 
