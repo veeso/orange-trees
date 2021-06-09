@@ -85,34 +85,6 @@ impl<U: PartialEq, T> Tree<U, T> {
         &mut self.root
     }
 
-    /// ### query
-    ///
-    /// Query tree for a certain node
-    pub fn query(&self, id: &U) -> Option<&Node<U, T>> {
-        self.root.query(id)
-    }
-
-    /// ### query_mut
-    ///
-    /// Query tree for a certain node and return it as a mutable reference
-    pub fn query_mut(&mut self, id: &U) -> Option<&mut Node<U, T>> {
-        self.root.query_mut(id)
-    }
-
-    /// ### parent
-    ///
-    /// Get parent node of `id`
-    pub fn parent(&self, id: &U) -> Option<&Node<U, T>> {
-        self.root().parent(id)
-    }
-
-    /// ### siblings
-    ///
-    /// Get siblings for provided node
-    pub fn siblings(&self, id: &U) -> Option<Vec<&U>> {
-        self.root().siblings(id)
-    }
-
     /// ### node_by_route
     ///
     /// Get starting from root the node associated to the indexes.
@@ -421,10 +393,6 @@ macro_rules! tree {
         node
     }};
 
-    ( $id:expr, $value:expr, $child:expr) => {
-        Node::new($id, $value).with_child($child);
-    };
-
     ( $id:expr, $value:expr ) => {
         Node::new($id, $value)
     };
@@ -489,67 +457,88 @@ mod tests {
         assert_eq!(root.iter().count(), 2);
         // -- Query
         assert_eq!(
-            tree.query(&"/home/omar/changelog.md".to_string())
+            tree.root()
+                .query(&"/home/omar/changelog.md".to_string())
                 .unwrap()
                 .id(),
             "/home/omar/changelog.md"
         );
-        assert!(tree.query(&"ommlar".to_string()).is_none());
+        assert!(tree.root().query(&"ommlar".to_string()).is_none());
         // is leaf
         assert_eq!(
-            tree.query(&"/home/omar".to_string()).unwrap().is_leaf(),
+            tree.root()
+                .query(&"/home/omar".to_string())
+                .unwrap()
+                .is_leaf(),
             false
         );
         assert_eq!(
-            tree.query(&"/home/omar/changelog.md".to_string())
+            tree.root()
+                .query(&"/home/omar/changelog.md".to_string())
                 .unwrap()
                 .is_leaf(),
             true
         );
         // parent
-        assert!(tree.parent(&"/".to_string()).is_none());
+        assert!(tree.root().parent(&"/".to_string()).is_none());
         assert_eq!(
-            tree.parent(&"/home/omar/changelog.md".to_string())
+            tree.root()
+                .parent(&"/home/omar/changelog.md".to_string())
                 .unwrap()
                 .id(),
             "/home/omar"
         );
-        assert!(tree.parent(&"/homer".to_string()).is_none());
+        assert!(tree.root().parent(&"/homer".to_string()).is_none());
         // siblings
         assert_eq!(
-            tree.siblings(&"/home/omar/changelog.md".to_string())
+            tree.root()
+                .siblings(&"/home/omar/changelog.md".to_string())
                 .unwrap(),
             vec!["/home/omar/readme.md"]
         );
-        assert_eq!(tree.siblings(&"/home/omar".to_string()).unwrap().len(), 0);
-        assert!(tree.siblings(&"/homer".to_string()).is_none());
+        assert_eq!(
+            tree.root()
+                .siblings(&"/home/omar".to_string())
+                .unwrap()
+                .len(),
+            0
+        );
+        assert!(tree.root().siblings(&"/homer".to_string()).is_none());
         // Mutable
         let root: &mut Node<String, &str> = tree.root_mut();
         assert_eq!(root.iter_mut().count(), 2);
         // Push node
-        tree.query_mut(&"/home/omar".to_string())
+        tree.root_mut()
+            .query_mut(&"/home/omar".to_string())
             .unwrap()
             .add_child(Node::new("/home/omar/Cargo.toml".to_string(), "Cargo.toml"));
         assert_eq!(
-            tree.query(&"/home/omar/Cargo.toml".to_string())
+            tree.root()
+                .query(&"/home/omar/Cargo.toml".to_string())
                 .unwrap()
                 .id(),
             "/home/omar/Cargo.toml"
         );
         // Remove
-        tree.query_mut(&"/home/omar".to_string())
+        tree.root_mut()
+            .query_mut(&"/home/omar".to_string())
             .unwrap()
             .add_child(Node::new("/home/omar/Cargo.lock".to_string(), "Cargo.lock"));
         assert_eq!(
-            tree.query(&"/home/omar/Cargo.lock".to_string())
+            tree.root()
+                .query(&"/home/omar/Cargo.lock".to_string())
                 .unwrap()
                 .id(),
             "/home/omar/Cargo.lock"
         );
-        tree.query_mut(&"/home/omar".to_string())
+        tree.root_mut()
+            .query_mut(&"/home/omar".to_string())
             .unwrap()
             .remove_child(&String::from("/home/omar/Cargo.lock"));
-        assert!(tree.query(&"/home/omar/Cargo.lock".to_string()).is_none());
+        assert!(tree
+            .root()
+            .query(&"/home/omar/Cargo.lock".to_string())
+            .is_none());
         // -- node_by_route
         assert_eq!(
             tree.node_by_route(&[0, 1, 0, 1]).unwrap().id(),
@@ -577,9 +566,13 @@ mod tests {
             .route_by_node(&"ciccio-pasticcio".to_string())
             .is_none());
         // Clear node
-        tree.query_mut(&"/home/omar".to_string()).unwrap().clear();
+        tree.root_mut()
+            .query_mut(&"/home/omar".to_string())
+            .unwrap()
+            .clear();
         assert_eq!(
-            tree.query(&"/home/omar".to_string())
+            tree.root()
+                .query(&"/home/omar".to_string())
                 .unwrap()
                 .children
                 .len(),
@@ -591,9 +584,9 @@ mod tests {
                 Node::new("a1".to_string(), "a1"),
                 Node::new("a2".to_string(), "a2"),
             ]));
-        assert!(tree.query(&"a".to_string()).is_some());
-        assert!(tree.query(&"a1".to_string()).is_some());
-        assert!(tree.query(&"a2".to_string()).is_some());
+        assert!(tree.root().query(&"a".to_string()).is_some());
+        assert!(tree.root().query(&"a1".to_string()).is_some());
+        assert!(tree.root().query(&"a2".to_string()).is_some());
         // -- truncate
         let mut tree: Tree<String, &str> = Tree::new(
             Node::new("/".to_string(), "/")
