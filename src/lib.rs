@@ -4,7 +4,7 @@
 //!
 //! ## Get Started
 //!
-//! ### Adding `orange-trees` as dependency
+//! ### Add `orange-trees` to your dependencies
 //!
 //! ```toml
 //! orange-trees = "0.1.0"
