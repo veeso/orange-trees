@@ -84,32 +84,6 @@ impl<U: PartialEq, T> Tree<U, T> {
     pub fn root_mut(&mut self) -> &mut Node<U, T> {
         &mut self.root
     }
-
-    /// ### node_by_route
-    ///
-    /// Get starting from root the node associated to the indexes.
-    /// When starting from tree, the first element in route must be `0`
-    pub fn node_by_route(&self, route: &[usize]) -> Option<&Node<U, T>> {
-        if route.is_empty() {
-            None
-        } else {
-            self.root().node_by_route(&route[1..])
-        }
-    }
-
-    /// ### route_by_node
-    ///
-    /// Calculate the route of a node by its id
-    pub fn route_by_node(&self, id: &U) -> Option<Vec<usize>> {
-        match self.root().route_by_node(id) {
-            None => None,
-            Some(route) => {
-                let mut r: Vec<usize> = vec![0];
-                r.extend(route);
-                Some(r)
-            }
-        }
-    }
 }
 
 /// ## Node
@@ -541,20 +515,11 @@ mod tests {
             .is_none());
         // -- node_by_route
         assert_eq!(
-            tree.node_by_route(&[0, 1, 0, 1]).unwrap().id(),
-            "/home/omar/changelog.md"
-        );
-        assert_eq!(
             tree.root().node_by_route(&[1, 0, 1]).unwrap().id(),
             "/home/omar/changelog.md"
         );
         assert!(tree.root().node_by_route(&[1, 0, 3]).is_none());
         // -- Route by node
-        assert_eq!(
-            tree.route_by_node(&"/home/omar/changelog.md".to_string())
-                .unwrap(),
-            vec![0, 1, 0, 1]
-        );
         assert_eq!(
             tree.root()
                 .route_by_node(&"/home/omar/changelog.md".to_string())
