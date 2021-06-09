@@ -218,7 +218,7 @@ impl<U: PartialEq, T> Node<U, T> {
 
     /// ### query
     ///
-    /// Search for `id` inside Node's children (or is itself)
+    /// Search for `id` inside Node and return a reference to it, if exists
     pub fn query(&self, id: &U) -> Option<&Self> {
         if self.id() == id {
             Some(&self)
@@ -235,7 +235,7 @@ impl<U: PartialEq, T> Node<U, T> {
 
     /// ### query_mut
     ///
-    /// Returns a mutable reference to a Node
+    /// Search for `id` inside Node and return a mutable reference to it, if exists
     pub fn query_mut(&mut self, id: &U) -> Option<&mut Self> {
         if self.id() == id {
             Some(self)
@@ -250,9 +250,26 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
+    /// ### find
+    ///
+    /// Find a node, in this branch, by predicate.
+    pub fn find<P>(&self, predicate: &P) -> Vec<&Self>
+    where
+        P: Fn(&Self) -> bool,
+    {
+        let mut result: Vec<&Self> = Vec::new();
+        if predicate(self) {
+            result.push(self);
+        }
+        // iter children and extend result
+        let children: Vec<Vec<&Self>> = self.iter().map(|x| x.find(predicate)).collect();
+        children.iter().for_each(|x| result.extend(x));
+        result
+    }
+
     /// ### count
     ///
-    /// Count items in tree
+    /// Count items in tree (including self)
     pub fn count(&self) -> usize {
         self.children.iter().map(|x| x.count()).sum::<usize>() + 1
     }
@@ -382,9 +399,9 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn test_tree() {
+    fn test_query() {
         // -- Build
-        let mut tree: Tree<String, &str> = Tree::new(
+        let tree: Tree<String, &str> = Tree::new(
             Node::new("/".to_string(), "/")
                 .with_child(
                     Node::new("/bin".to_string(), "bin/")
@@ -478,6 +495,28 @@ mod tests {
             0
         );
         assert!(tree.root().siblings(&"/homer".to_string()).is_none());
+    }
+
+    #[test]
+    fn test_tree_manipolation() {
+        let mut tree: Tree<String, &str> = Tree::new(
+            Node::new("/".to_string(), "/")
+                .with_child(
+                    Node::new("/bin".to_string(), "bin/")
+                        .with_child(Node::new("/bin/ls".to_string(), "ls"))
+                        .with_child(Node::new("/bin/pwd".to_string(), "pwd")),
+                )
+                .with_child(
+                    Node::new("/home".to_string(), "home/").with_child(
+                        Node::new("/home/omar".to_string(), "omar/")
+                            .with_child(Node::new("/home/omar/readme.md".to_string(), "readme.md"))
+                            .with_child(Node::new(
+                                "/home/omar/changelog.md".to_string(),
+                                "changelog.md",
+                            )),
+                    ),
+                ),
+        );
         // Mutable
         let root: &mut Node<String, &str> = tree.root_mut();
         assert_eq!(root.iter_mut().count(), 2);
@@ -513,23 +552,6 @@ mod tests {
             .root()
             .query(&"/home/omar/Cargo.lock".to_string())
             .is_none());
-        // -- node_by_route
-        assert_eq!(
-            tree.root().node_by_route(&[1, 0, 1]).unwrap().id(),
-            "/home/omar/changelog.md"
-        );
-        assert!(tree.root().node_by_route(&[1, 0, 3]).is_none());
-        // -- Route by node
-        assert_eq!(
-            tree.root()
-                .route_by_node(&"/home/omar/changelog.md".to_string())
-                .unwrap(),
-            vec![1, 0, 1]
-        );
-        assert!(tree
-            .root()
-            .route_by_node(&"ciccio-pasticcio".to_string())
-            .is_none());
         // Clear node
         tree.root_mut()
             .query_mut(&"/home/omar".to_string())
@@ -543,15 +565,6 @@ mod tests {
                 .len(),
             0
         );
-        // -- With children
-        let tree: Tree<String, &str> =
-            Tree::new(Node::new("a".to_string(), "a").with_children(vec![
-                Node::new("a1".to_string(), "a1"),
-                Node::new("a2".to_string(), "a2"),
-            ]));
-        assert!(tree.root().query(&"a".to_string()).is_some());
-        assert!(tree.root().query(&"a1".to_string()).is_some());
-        assert!(tree.root().query(&"a2".to_string()).is_some());
         // -- truncate
         let mut tree: Tree<String, &str> = Tree::new(
             Node::new("/".to_string(), "/")
@@ -578,6 +591,10 @@ mod tests {
         assert_eq!(root.children[0].id(), "/bin");
         assert_eq!(root.children[1].children.len(), 0);
         assert_eq!(root.children[1].id(), "/home");
+    }
+
+    #[test]
+    fn test_sort() {
         // Sort
         let mut tree: Tree<&'static str, usize> = Tree::new(
             Node::new("/", 0)
@@ -595,6 +612,83 @@ mod tests {
             .sort(|a, b| a.value().partial_cmp(b.value()).unwrap());
         let values: Vec<usize> = tree.root().iter().map(|x| *x.value()).collect();
         assert_eq!(values, vec![1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+
+    #[test]
+    fn test_with_children() {
+        // -- With children
+        let tree: Tree<String, &str> =
+            Tree::new(Node::new("a".to_string(), "a").with_children(vec![
+                Node::new("a1".to_string(), "a1"),
+                Node::new("a2".to_string(), "a2"),
+            ]));
+        assert!(tree.root().query(&"a".to_string()).is_some());
+        assert!(tree.root().query(&"a1".to_string()).is_some());
+        assert!(tree.root().query(&"a2".to_string()).is_some());
+    }
+
+    #[test]
+    fn test_routes() {
+        let tree: Tree<String, &str> = Tree::new(
+            Node::new("/".to_string(), "/")
+                .with_child(
+                    Node::new("/bin".to_string(), "bin/")
+                        .with_child(Node::new("/bin/ls".to_string(), "ls"))
+                        .with_child(Node::new("/bin/pwd".to_string(), "pwd")),
+                )
+                .with_child(
+                    Node::new("/home".to_string(), "home/").with_child(
+                        Node::new("/home/omar".to_string(), "omar/")
+                            .with_child(Node::new("/home/omar/readme.md".to_string(), "readme.md"))
+                            .with_child(Node::new(
+                                "/home/omar/changelog.md".to_string(),
+                                "changelog.md",
+                            )),
+                    ),
+                ),
+        );
+        // -- node_by_route
+        assert_eq!(
+            tree.root().node_by_route(&[1, 0, 1]).unwrap().id(),
+            "/home/omar/changelog.md"
+        );
+        assert!(tree.root().node_by_route(&[1, 0, 3]).is_none());
+        // -- Route by node
+        assert_eq!(
+            tree.root()
+                .route_by_node(&"/home/omar/changelog.md".to_string())
+                .unwrap(),
+            vec![1, 0, 1]
+        );
+        assert!(tree
+            .root()
+            .route_by_node(&"ciccio-pasticcio".to_string())
+            .is_none());
+    }
+
+    #[test]
+    fn test_find() {
+        let tree: Tree<&'static str, usize> = Tree::new(
+            Node::new("/", 0)
+                .with_child(Node::new("a", 2))
+                .with_child(Node::new("b", 7))
+                .with_child(Node::new("c", 13))
+                .with_child(Node::new("d", 16))
+                .with_child(
+                    Node::new("e", 75)
+                        .with_child(Node::new("f", 68))
+                        .with_child(Node::new("g", 12))
+                        .with_child(Node::new("h", 9))
+                        .with_child(Node::new("i", 4)),
+                ),
+        );
+        // Find all even values
+        let even_nodes = tree
+            .root()
+            .find(&|x: &Node<&'static str, usize>| x.value() % 2 == 0);
+        assert_eq!(even_nodes.len(), 6);
+        let values: Vec<usize> = even_nodes.iter().map(|x| *x.value()).collect();
+        assert_eq!(values, vec![0, 2, 16, 68, 12, 4]);
     }
 
     #[test]
