@@ -4,12 +4,65 @@
   <img src="docs/images/orange-trees.svg" width="256" height="256" />
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](https://opensource.org/licenses/MIT) [![Stars](https://img.shields.io/github/stars/veeso/orange-trees.svg)](https://github.com/veeso/orange-trees) [![Downloads](https://img.shields.io/crates/d/orange-trees.svg)](https://crates.io/crates/orange-trees) [![Crates.io](https://img.shields.io/badge/crates.io-v0.1.0-orange.svg)](https://crates.io/crates/orange-trees) [![Docs](https://docs.rs/orange-trees/badge.svg)](https://docs.rs/orange-trees)  
+<p align="center">~ A tree data structure implementation in Rust ~</p>
 
-[![Build](https://github.com/veeso/orange-trees/workflows/Linux/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Build](https://github.com/veeso/orange-trees/workflows/Windows/badge.svg)](https://github.com/veeso/orange-trees/actions) [![Coverage Status](https://coveralls.io/repos/github/veeso/orange-trees/badge.svg?branch=main)](https://coveralls.io/github/veeso/orange-trees?branch=main)
+<p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
+<p align="center">Current version: 0.1.0 (09/06/2021)</p>
 
-Developed by Christian Visintin  
-Current version: 0.1.0 (09/06/2021)
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT"
+    ><img
+      src="https://img.shields.io/badge/License-MIT-teal.svg"
+      alt="License-MIT"
+  /></a>
+  <a href="https://github.com/veeso/orange-trees/stargazers"
+    ><img
+      src="https://img.shields.io/github/stars/veeso/orange-trees.svg"
+      alt="Repo stars"
+  /></a>
+  <a href="https://crates.io/crates/orange-trees"
+    ><img
+      src="https://img.shields.io/crates/d/orange-trees.svg"
+      alt="Downloads counter"
+  /></a>
+  <a href="https://crates.io/crates/orange-trees"
+    ><img
+      src="https://img.shields.io/crates/v/orange-trees.svg"
+      alt="Latest version"
+  /></a>
+  <a href="https://www.buymeacoffee.com/veeso">
+    <img
+      src="https://img.shields.io/badge/Donate-BuyMeACoffee-yellow.svg"
+      alt="Buy me a coffee"
+  /></a>
+</p>
+<p align="center">
+  <a href="https://github.com/veeso/orange-trees/actions"
+    ><img
+      src="https://github.com/veeso/orange-trees/workflows/Linux/badge.svg"
+      alt="Linux CI"
+  /></a>
+  <a href="https://github.com/veeso/orange-trees/actions"
+    ><img
+      src="https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg"
+      alt="MacOS CI"
+  /></a>
+  <a href="https://github.com/veeso/orange-trees/actions"
+    ><img
+      src="https://github.com/veeso/orange-trees/workflows/Windows/badge.svg"
+      alt="Windows CI"
+  /></a>
+  <a href="https://coveralls.io/github/veeso/orange-trees"
+    ><img
+      src="https://coveralls.io/repos/github/veeso/orange-trees/badge.svg"
+      alt="Coveralls"
+  /></a>
+  <a href="https://docs.rs/orange-trees"
+    ><img
+      src="https://docs.rs/orange-trees/badge.svg"
+      alt="Docs"
+  /></a>
+</p>
 
 ---
 
@@ -27,10 +80,53 @@ Current version: 0.1.0 (09/06/2021)
 
 ## About orange-trees 🍊
 
-orange-trees is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
-
 > Flowers in my hair, I belong by the sea  
-> Where we used to be, sitting by the orange trees
+> Where we used to be, sitting by the orange trees  
+> ~ Orange Trees - Marina ~
+
+orange-trees is an implementation of the **Tree** data structure. It comes with a rich set of methods to manipulate and query nodes.
+In orange-trees each Tree is represented by a *Node*, where each Node has a **Key**, which identify the node, a **Value** and a list of children, which are nodes too.
+Key and value are defined by the user, since they are generics.
+
+```rust
+#[macro_use]
+extern crate orange_trees;
+
+use orange_trees::{Tree, Node};
+
+// Create a tree using macro
+let tree: Tree<&'static str, &'static str> = Tree::new(
+  node!("/", "/"
+    , node!("/bin", "bin/"
+      , node!("/bin/ls", "ls")
+      , node!("/bin/pwd", "pwd")
+    )
+    , node!("/tmp", "tmp/"
+      , node!("/tmp/dump.txt", "dump.txt")
+      , node!("/tmp/omar.txt", "omar.txt")
+    )
+  )
+);
+
+// Create a tree using constructor
+let tree: Tree<&'static str, &'static str> = Tree::new(
+  Node::new("/", "/")
+    .with_child(
+      Node::new("/bin", "bin/")
+        .with_child(Node::new("/bin/ls", "ls"))
+        .with_child(Node::new("/bin/pwd", "pwd"))
+      )
+    .with_child(
+      Node::new("/tmp", "tmp/")
+        .with_child(Node::new("/tmp/dump.txt", "dump.txt"))
+        .with_child(Node::new("/tmp/omar.txt", "omar.txt"))
+        .with_child(
+          Node::new("/tmp/.cache", "cache/")
+            .with_child(Node::new("/tmp/.cache/xyz.cache", "xyz.cache"))
+        )
+    ),
+);
+```
 
 ---
 
@@ -67,7 +163,10 @@ View orange-trees's changelog [HERE](CHANGELOG.md)
 
 If you like orange-trees and you're grateful for the work I've done, please consider a little donation 🥳
 
-[![Buy-me-a-coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=veeso&button_colour=404040&font_colour=ffffff&font_family=Comic&outline_colour=ffffff&coffee_colour=FFDD00)](https://www.buymeacoffee.com/veeso)
+You can make a donation with one of these platforms:
+
+[![Buy-me-a-coffee](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?style=for-the-badge&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/veeso)
+[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/chrisintin)
 
 ---
 
