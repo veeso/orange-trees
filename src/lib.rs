@@ -408,7 +408,7 @@ impl<U: PartialEq, T> Node<U, T> {
     /// Search for `id` inside Node and return a reference to it, if exists
     pub fn query(&self, id: &U) -> Option<&Self> {
         if self.id() == id {
-            Some(&self)
+            Some(self)
         } else {
             // Recurse search
             self.children
