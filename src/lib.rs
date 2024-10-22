@@ -7,7 +7,7 @@
 //! ### Add `orange-trees` to your dependencies
 //!
 //! ```toml
-//! orange-trees = "0.1.0"
+//! orange-trees = "0.1"
 //! ```
 //!
 //! ### Initialize a tree
@@ -209,84 +209,50 @@
     html_logo_url = "https://raw.githubusercontent.com/veeso/orange-trees/main/docs/images/cargo/orange-trees-512.png"
 )]
 
-/**
- * MIT License
- *
- * orange-trees - Copyright (C) 2021 Christian Visintin
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 // deps
 use std::cmp::Ordering;
 use std::slice::{Iter, IterMut};
 
-/// ## Tree
-///
 /// represent the tree data structure inside the component.
-/// U: is the type for the node indentifier (must implement PartialEq)
-/// T: is the type for the node value
+/// U: is the type for the [`Node`] indentifier (must implement [`PartialEq`])
+/// T: is the type for the [`Node`] value
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Tree<U, T> {
     root: Node<U, T>,
 }
 
 impl<U: PartialEq, T> Tree<U, T> {
-    /// ### new
-    ///
-    /// Instantiates a new `Tree`
+    /// Instantiates a new [`Tree`]
     pub fn new(root: Node<U, T>) -> Self {
         Self { root }
     }
 
-    /// ### root
-    ///
-    /// Returns a reference to the root node
+    /// Returns a reference to the root [`Node`]
     pub fn root(&self) -> &Node<U, T> {
         &self.root
     }
 
-    /// ### root_mut
-    ///
-    /// Returns a mutablen reference to the root node
+    /// Returns a mutable reference to the root [`Node`]
     pub fn root_mut(&mut self) -> &mut Node<U, T> {
         &mut self.root
     }
 }
 
-/// ## Node
-///
-/// Describes a node inside the `Tree`
+/// Describes a node inside the [`Tree`]
 /// U: is the type for the node indentifier (must implement PartialEq)
 /// T: is the type for the node value
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Node<U, T> {
-    id: U,    // Must uniquely identify the node in the tree
-    value: T, // The node value
+    /// The node identifier
+    id: U,
+    /// The node value
+    value: T,
+    /// The node children
     children: Vec<Node<U, T>>,
 }
 
 impl<U: PartialEq, T> Node<U, T> {
-    // -- constructor
-
-    /// ### new
-    ///
-    /// Instantiates a new `Node`.
+    /// Instantiates a new [`Node`].
     /// In order to use query methods the ID should be unique for each node in the tree
     pub fn new(id: U, value: T) -> Self {
         Self {
@@ -296,86 +262,65 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### with_children
-    ///
-    /// Sets Node children
+    /// Sets [`Node`] children
     pub fn with_children(mut self, children: Vec<Node<U, T>>) -> Self {
         self.children = children;
         self
     }
 
-    /// ### with_child
-    ///
-    /// Create a new child in this Node
+    /// Create a new child in this [`Node`]
     pub fn with_child(mut self, child: Node<U, T>) -> Self {
         self.add_child(child);
         self
     }
 
-    // -- getter
-
-    /// ### id
-    ///
     /// Get reference to id
     pub fn id(&self) -> &U {
         &self.id
     }
 
-    /// ### value
-    ///
-    /// Get reference to node value
+    /// Get reference to [`Node`] value
     pub fn value(&self) -> &T {
         &self.value
     }
 
-    /// ### children
-    ///
-    /// Returns a reference to the node's children
+    /// Set the value of the [`Node`]
+    pub fn set_value(&mut self, value: T) {
+        self.value = value;
+    }
+
+    /// Returns a reference to the [`Node`]'s children
     pub fn children(&self) -> &[Node<U, T>] {
         self.children.as_slice()
     }
 
-    /// ### iter
-    ///
-    /// Returns an iterator over node's children
+    /// Returns an iterator over [`Node`]'s children
     pub fn iter(&self) -> Iter<'_, Node<U, T>> {
         self.children.iter()
     }
 
-    /// ### iter_mut
-    ///
-    /// Returns a mutable iterator over node's children
+    /// Returns a mutable iterator over [`Node`]'s children
     pub fn iter_mut(&mut self) -> IterMut<'_, Node<U, T>> {
         self.children.iter_mut()
     }
 
-    // -- manipulation
-
-    /// ### add_child
-    ///
-    /// Add a child to the node
+    /// Add a child to the [`Node`]
     pub fn add_child(&mut self, child: Node<U, T>) {
         self.children.push(child);
     }
 
-    /// ### remove_child
-    ///
-    /// Remove child from node
+    /// Remove child from [`Node`]
     pub fn remove_child(&mut self, id: &U) {
         self.children.retain(|x| x.id() != id);
     }
 
-    /// ### clear
-    ///
-    /// Clear node children
+    /// Clear [`Node`]'s children
     pub fn clear(&mut self) {
         self.children.clear();
     }
 
-    /// ### truncate
-    ///
     /// Truncate tree at depth.
-    /// If depth is `0`, node's children will be cleared
+    /// If depth is `0`, [`Node`]'s children will be cleared
     pub fn truncate(&mut self, depth: usize) {
         if depth == 0 {
             self.children.clear();
@@ -384,8 +329,6 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### sort
-    ///
     /// Sort node children by predicate
     pub fn sort<F>(&mut self, compare: F)
     where
@@ -394,18 +337,12 @@ impl<U: PartialEq, T> Node<U, T> {
         self.children.sort_by(compare);
     }
 
-    // -- query
-
-    /// ### is_leaf
-    ///
-    /// Returns whether this node is a leaf (which means it has no children)
+    /// Returns whether this [`Node`] is a leaf (which means it has no children)
     pub fn is_leaf(&self) -> bool {
         self.children.is_empty()
     }
 
-    /// ### query
-    ///
-    /// Search for `id` inside Node and return a reference to it, if exists
+    /// Search for `id` inside [`Node`] and return a reference to it, if exists
     pub fn query(&self, id: &U) -> Option<&Self> {
         if self.id() == id {
             Some(self)
@@ -420,9 +357,7 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### query_mut
-    ///
-    /// Search for `id` inside Node and return a mutable reference to it, if exists
+    /// Search for `id` inside [`Node`] and return a mutable reference to it, if exists
     pub fn query_mut(&mut self, id: &U) -> Option<&mut Self> {
         if self.id() == id {
             Some(self)
@@ -437,8 +372,6 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### find
-    ///
     /// Find a node, in this branch, by predicate.
     pub fn find<P>(&self, predicate: &P) -> Vec<&Self>
     where
@@ -454,15 +387,11 @@ impl<U: PartialEq, T> Node<U, T> {
         result
     }
 
-    /// ### count
-    ///
     /// Count items in tree (including self)
     pub fn count(&self) -> usize {
         self.children.iter().map(|x| x.count()).sum::<usize>() + 1
     }
 
-    /// ### depth
-    ///
     /// Calculate the maximum depth of the tree
     pub fn depth(&self) -> usize {
         /// ### depth_r
@@ -478,9 +407,7 @@ impl<U: PartialEq, T> Node<U, T> {
         depth_r(self, 1)
     }
 
-    /// ### parent
-    ///
-    /// Get parent node of `id`
+    /// Get parent [`Node`] of `id`
     pub fn parent(&self, id: &U) -> Option<&Self> {
         match self.route_by_node(id) {
             None => None,
@@ -495,9 +422,7 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### siblings
-    ///
-    /// Get siblings for provided node
+    /// Get siblings for provided [`Node`]
     pub fn siblings(&self, id: &U) -> Option<Vec<&U>> {
         self.parent(id).map(|x| {
             x.children
@@ -508,8 +433,6 @@ impl<U: PartialEq, T> Node<U, T> {
         })
     }
 
-    /// ### node_by_route
-    ///
     /// Given a vector of indexes, returns the node associated to the route
     pub fn node_by_route(&self, route: &[usize]) -> Option<&Self> {
         if route.is_empty() {
@@ -521,9 +444,7 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
-    /// ### route_by_node
-    ///
-    /// Calculate the route of a node by its id
+    /// Calculate the route of a [`Node`] by its id
     pub fn route_by_node(&self, id: &U) -> Option<Vec<usize>> {
         // Recursive function
         fn route_by_node_r<U: PartialEq, T>(
@@ -581,9 +502,9 @@ macro_rules! node {
 #[cfg(test)]
 mod tests {
 
-    use super::*;
-
     use pretty_assertions::assert_eq;
+
+    use super::*;
 
     #[test]
     fn test_query() {
@@ -900,5 +821,15 @@ mod tests {
             node!("b", 0)
         ));
         assert_eq!(tree.root().count(), 5);
+    }
+
+    #[test]
+    fn test_should_update_node_value() {
+        let mut node = Node::new("root", 0);
+
+        assert_eq!(node.value(), &0);
+        node.set_value(1);
+
+        assert_eq!(node.value(), &1);
     }
 }

@@ -1,4 +1,4 @@
-name: Linux
+name: ci
 
 on: [push, pull_request]
 
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           override: true

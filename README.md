@@ -1,13 +1,13 @@
 # orange-trees
 
 <p align="center">
-  <img src="docs/images/orange-trees.svg" width="256" height="256" />
+  <img src="docs/images/orange-trees.svg" width="256" height="256" alt="logo" />
 </p>
 
 <p align="center">~ A tree data structure implementation in Rust ~</p>
 
-<p align="center">Developed by <a href="https://veeso.github.io/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.1.0 (09/06/2021)</p>
+<p align="center">Developed by <a href="https://veeso.me/" target="_blank">@veeso</a></p>
+<p align="center">Current version: 0.1.1 (09/06/2021)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"
@@ -17,7 +17,7 @@
   /></a>
   <a href="https://github.com/veeso/orange-trees/stargazers"
     ><img
-      src="https://img.shields.io/github/stars/veeso/orange-trees.svg"
+      src="https://img.shields.io/github/stars/veeso/orange-trees.svg?style=badge"
       alt="Repo stars"
   /></a>
   <a href="https://crates.io/crates/orange-trees"
@@ -37,20 +37,10 @@
   /></a>
 </p>
 <p align="center">
-  <a href="https://github.com/veeso/orange-trees/actions"
+  <a href="https://github.com/veeso/orange-trees/actions/workflows/ci.yml"
     ><img
-      src="https://github.com/veeso/orange-trees/workflows/Linux/badge.svg"
-      alt="Linux CI"
-  /></a>
-  <a href="https://github.com/veeso/orange-trees/actions"
-    ><img
-      src="https://github.com/veeso/orange-trees/workflows/MacOS/badge.svg"
-      alt="MacOS CI"
-  /></a>
-  <a href="https://github.com/veeso/orange-trees/actions"
-    ><img
-      src="https://github.com/veeso/orange-trees/workflows/Windows/badge.svg"
-      alt="Windows CI"
+      src="https://github.com/veeso/orange-trees/actions/workflows/ci.yml/badge.svg"
+      alt="CI"
   /></a>
   <a href="https://coveralls.io/github/veeso/orange-trees"
     ><img
@@ -73,7 +63,6 @@
     - [Examples](#examples)
   - [Contributing and issues 🤝🏻](#contributing-and-issues-)
   - [Changelog ⏳](#changelog-)
-  - [Buy me a coffee ☕](#buy-me-a-coffee-)
   - [License 📃](#license-)
 
 ---
@@ -156,17 +145,6 @@ Please follow [our contributing guidelines](CONTRIBUTING.md)
 ## Changelog ⏳
 
 View orange-trees's changelog [HERE](CHANGELOG.md)
-
----
-
-## Buy me a coffee ☕
-
-If you like orange-trees and you're grateful for the work I've done, please consider a little donation 🥳
-
-You can make a donation with one of these platforms:
-
-[![ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/veeso)
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.me/chrisintin)
 
 ---
 

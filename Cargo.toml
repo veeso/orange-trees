@@ -1,8 +1,8 @@
 [package]
 name = "orange-trees"
-version = "0.1.0"
-authors = ["Christian Visintin"]
-edition = "2018"
+version = "0.1.1"
+authors = ["Christian Visintin <christian.visintin@veeso.dev>"]
+edition = "2021"
 categories = ["data-structures"]
 description = "Tree data structure with several methods to query and manipulate nodes."
 documentation = "https://docs.rs/orange-trees"
@@ -16,8 +16,4 @@ repository = "https://github.com/veeso/orange-trees"
 [dependencies]
 
 [dev-dependencies]
-pretty_assertions = "0.7.2"
-
-#[[example]]
-#name = "demo"
-#path = "examples/demo.rs"
+pretty_assertions = "1"
