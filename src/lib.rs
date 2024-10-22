@@ -422,6 +422,21 @@ impl<U: PartialEq, T> Node<U, T> {
         }
     }
 
+    /// Get mutable parent [`Node`] of `id`
+    pub fn parent_mut(&mut self, id: &U) -> Option<&mut Self> {
+        match self.route_by_node(id) {
+            None => None,
+            Some(route) => {
+                // Get parent
+                if route.is_empty() {
+                    None
+                } else {
+                    self.node_by_route_mut(&route[0..route.len() - 1])
+                }
+            }
+        }
+    }
+
     /// Get siblings for provided [`Node`]
     pub fn siblings(&self, id: &U) -> Option<Vec<&U>> {
         self.parent(id).map(|x| {
@@ -441,6 +456,17 @@ impl<U: PartialEq, T> Node<U, T> {
             let next: &Node<U, T> = self.children.get(route[0])?;
             let route = &route[1..];
             next.node_by_route(route)
+        }
+    }
+
+    /// Given a vector of indexes, returns the mutable [`Node`] associated to the route
+    pub fn node_by_route_mut(&mut self, route: &[usize]) -> Option<&mut Self> {
+        if route.is_empty() {
+            Some(self)
+        } else {
+            let next = self.children.get_mut(route[0])?;
+            let route = &route[1..];
+            next.node_by_route_mut(route)
         }
     }
 
@@ -603,6 +629,33 @@ mod tests {
             0
         );
         assert!(tree.root().siblings(&"/homer".to_string()).is_none());
+    }
+
+    #[test]
+    fn test_should_get_mutable_parent() {
+        let mut tree: Tree<&'static str, &'static str> = Tree::new(
+            Node::new("/", "/")
+                .with_child(
+                    Node::new("/bin", "bin/")
+                        .with_child(Node::new("/bin/ls", "ls"))
+                        .with_child(Node::new("/bin/pwd", "pwd")),
+                )
+                .with_child(
+                    Node::new("/home", "home/").with_child(
+                        Node::new("/home/omar", "omar/")
+                            .with_child(Node::new("/home/omar/readme.md", "readme.md"))
+                            .with_child(Node::new("/home/omar/changelog.md", "changelog.md")),
+                    ),
+                ),
+        );
+
+        let parent = tree
+            .root_mut()
+            .parent_mut(&"/home/omar/changelog.md")
+            .unwrap();
+
+        parent.set_value("new value");
+        assert_eq!(parent.value(), &"new value");
     }
 
     #[test]

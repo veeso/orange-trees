@@ -1,6 +1,6 @@
 [package]
 name = "orange-trees"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Christian Visintin <christian.visintin@veeso.dev>"]
 edition = "2021"
 categories = ["data-structures"]

@@ -1,10 +1,18 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.1.2](#012)
   - [0.1.1](#011)
   - [0.1.0](#010)
 
 ---
+
+## 0.1.2
+
+Released on 22/10/2024
+
+- Added `Node::parent_mut`
+- Added `Node::node_by_route_mut`
 
 ## 0.1.1
 
