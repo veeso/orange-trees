@@ -7,7 +7,7 @@
 <p align="center">~ A tree data structure implementation in Rust ~</p>
 
 <p align="center">Developed by <a href="https://veeso.me/" target="_blank">@veeso</a></p>
-<p align="center">Current version: 0.1.1 (09/06/2021)</p>
+<p align="center">Current version: 0.1.1 (22/10/2024)</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/MIT"
