@@ -264,7 +264,9 @@ impl<U: PartialEq, T> Node<U, T> {
 
     /// Sets [`Node`] children
     pub fn with_children(mut self, children: Vec<Node<U, T>>) -> Self {
-        self.children = children;
+        // we use `with_child` to ensure that the children are correctly added and with no duplicates
+        self.children = Vec::with_capacity(children.len());
+        children.into_iter().for_each(|x| self.add_child(x));
         self
     }
 
@@ -305,8 +307,15 @@ impl<U: PartialEq, T> Node<U, T> {
     }
 
     /// Add a child to the [`Node`]
+    ///
+    /// If the child already exists, it will be replaced
     pub fn add_child(&mut self, child: Node<U, T>) {
-        self.children.push(child);
+        // Override child if exists
+        if let Some(node) = self.children.iter_mut().find(|x| x.id() == child.id()) {
+            node.set_value(child.value);
+        } else {
+            self.children.push(child);
+        }
     }
 
     /// Remove child from [`Node`]
@@ -394,8 +403,6 @@ impl<U: PartialEq, T> Node<U, T> {
 
     /// Calculate the maximum depth of the tree
     pub fn depth(&self) -> usize {
-        /// ### depth_r
-        ///
         /// Private recursive call for depth
         fn depth_r<U, T>(ptr: &Node<U, T>, depth: usize) -> usize {
             ptr.children
@@ -509,6 +516,40 @@ impl<U: PartialEq, T> Node<U, T> {
 // -- node macro
 
 #[macro_export]
+/// Create a new [`Node`] using a macro
+///
+/// ## Arguments
+///
+/// - `id`: The node identifier
+/// - `value`: The node value
+/// - `more`: [`Node`] children
+///
+/// # Examples
+///
+/// Create a node with no children
+///
+/// ```rust
+/// use orange_trees::{Node, node};
+///
+/// let node: Node<&'static str, usize> = node!("root", 0);
+///```
+///
+/// Create a node with children
+///
+/// ```rust
+/// use orange_trees::{Node, node};
+///
+/// let node: Node<&'static str, usize> = node!("root", 0, node!("a", 1));
+/// ```
+///
+/// Create a nested node structure
+///
+/// ```rust
+/// use orange_trees::{Node, node};
+///
+/// let node: Node<&'static str, usize> = node!("root", 0, node!("a", 1, node!("a1", 3), node!("a2", 4)), node!("b", 0));
+/// ```
+///
 macro_rules! node {
     ( $id:expr, $value:expr, $( $more:expr ),* ) => {{
         let mut node = Node::new($id, $value);
@@ -884,5 +925,16 @@ mod tests {
         node.set_value(1);
 
         assert_eq!(node.value(), &1);
+    }
+
+    #[test]
+    fn test_add_child_should_not_duplicate_children_with_same_id() {
+        let mut node = Node::new("root", 0);
+
+        node.add_child(Node::new("child", 1));
+        node.add_child(Node::new("child", 2));
+
+        assert_eq!(node.children().len(), 1);
+        assert_eq!(node.children()[0].value(), &2);
     }
 }

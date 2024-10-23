@@ -1,11 +1,18 @@
 # Changelog
 
 - [Changelog](#changelog)
+  - [0.1.3](#013)
   - [0.1.2](#012)
   - [0.1.1](#011)
   - [0.1.0](#010)
 
 ---
+
+## 0.1.3
+
+Released on 23/10/2024
+
+- `Node::add_child` created a duplicate of Node with same id
 
 ## 0.1.2
 
